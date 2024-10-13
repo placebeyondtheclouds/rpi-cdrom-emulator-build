@@ -110,7 +110,7 @@ What's the difference between my build and the pre-compiled image at https://git
 
   - `sudo apt install -y lm-sensors nmon screen git p7zip-full python3-rpi.gpio python3-smbus python3-spidev python3-numpy python3-pil fonts-dejavu ntfs-3g`
 
-- Apply kernel patch for large ISOs, recompile and install the kernel natively
+- Apply kernel patch for large ISOs, recompile and install the kernel natively. Takes a few hours, cross-compiling might be a better idea.
 
   - `sudo apt install bc bison flex libssl-dev make ca-certificates`
   - `screen`
@@ -134,14 +134,14 @@ What's the difference between my build and the pre-compiled image at https://git
 
       ```
 
-  - `cp drivers/usb/gadget/function/storage_common.c drivers/usb/gadget/function/storage_common.c.orig`
+  - `cp drivers/usb/gadget/function/storage_common.c drivers/usb/gadget/function/storage_common.c.updated`
   - create a patch
-    - `nano drivers/usb/gadget/function/storage_common.c`
+    - `nano drivers/usb/gadget/function/storage_common.c.updated`
     - remove six lines at line 243
     - might as well create a patch while you're at it
-      - `diff -Naru drivers/usb/gadget/function/storage_common.c.orig drivers/usb/gadget/function/storage_common.c > 00-remove_iso_limit.patch`
+      - `diff -Naru drivers/usb/gadget/function/storage_common.c.updated drivers/usb/gadget/function/storage_common.c > 00-remove_iso_limit.patch`
   - or just use the included patch for version 6.6.56
-    - `patch drivers/usb/gadget/function/storage_common.c.orig 00-remove_iso_limit.patch`
+    - `patch drivers/usb/gadget/function/storage_common.c 00-remove_iso_limit.patch`
   - `make bcmrpi_defconfig`
   - `make -j6 zImage modules dtbs`
   - `sudo make -j6 modules_install`
@@ -151,6 +151,12 @@ What's the difference between my build and the pre-compiled image at https://git
   - `sudo cp arch/arm/boot/dts/overlays/*.dtb* /boot/firmware/overlays/`
   - `sudo cp arch/arm/boot/dts/overlays/README /boot/firmware/overlays/`
   - `sudo reboot`
+
+- Shutdown the Pi, remove the microsd card, mount it on the host computer, make backup
+
+  - `cd ~`
+  - `sudo dd if=/dev/mmcblk0 | gzip -9 > cdemu.img.gz`
+    - restore later with `sudo zcat cdemu.img.gz | sudo dd of=/dev/mmcblk0` if needed
 
 - Install the gadget_cdrom
 
