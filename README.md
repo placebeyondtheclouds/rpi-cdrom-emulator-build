@@ -2,19 +2,19 @@
 
 ## Description
 
-Building a hardware cdrom emulator for ISO images using a Raspberry Pi Zero W and a python script https://github.com/tjmnmk/gadget_cdrom
+My notes on building a hardware cdrom emulator for ISO images using a **Raspberry Pi Zero W** and a python script **https://github.com/tjmnmk/gadget_cdrom**
 
-Use cases:
+**Use cases**:
 
 - Setting up a fresh install of an OS on a computer without the need to create a bootable USB
 - Running a live OS without the need to create a bootable USB
 - Restoring an OS with Live CD tools
 - Recovering a corrupted bootloader with boot-repair-disk-64bit.iso
 
-What's the difference between my build and the pre-compiled image at https://github.com/tjmnmk/gadget_cdrom/releases ?
+What's the **difference** between my build and the pre-compiled image at https://github.com/tjmnmk/gadget_cdrom/releases ?
 
-- Fully manual build on the official release of the OS to avoid any potential security risks
-- Most recent release of Raspberry Pi OS Lite
+- Fully manual build on the official release of the OS **to avoid any potential security risks**
+- Most **recent** release of Raspberry Pi OS Lite
 
 ## Build pictures
 
