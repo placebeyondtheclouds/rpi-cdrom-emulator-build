@@ -108,17 +108,7 @@ What's the difference between my build and the pre-compiled image at https://git
 
 - Install the required packages
 
-  - `sudo apt install -y screen git p7zip-full python3-rpi.gpio python3-smbus python3-spidev python3-numpy python3-pil fonts-dejavu ntfs-3g`
-
-- Install the gadget_cdrom
-
-  - `cd /opt`
-  - `sudo git clone https://github.com/tjmnmk/gadget_cdrom.git`
-  - `cd gadget_cdrom`
-  - `sudo ./create_image.sh`, set 50GB for the image size
-  - `sudo ln -s /opt/gadget_cdrom/gadget_cdrom.service /etc/systemd/system/gadget_cdrom.service`
-  - `sudo systemctl enable gadget_cdrom.service`
-  - `sudo reboot`
+  - `sudo apt install -y lm-sensors nmon screen git p7zip-full python3-rpi.gpio python3-smbus python3-spidev python3-numpy python3-pil fonts-dejavu ntfs-3g`
 
 - Apply kernel patch for large ISOs, recompile and install the kernel natively
 
@@ -160,6 +150,16 @@ What's the difference between my build and the pre-compiled image at https://git
   - `sudo cp arch/arm/boot/dts/broadcom/*.dtb /boot/firmware/`
   - `sudo cp arch/arm/boot/dts/overlays/*.dtb* /boot/firmware/overlays/`
   - `sudo cp arch/arm/boot/dts/overlays/README /boot/firmware/overlays/`
+  - `sudo reboot`
+
+- Install the gadget_cdrom
+
+  - `cd /opt`
+  - `sudo git clone https://github.com/tjmnmk/gadget_cdrom.git`
+  - `cd gadget_cdrom`
+  - `sudo ./create_image.sh`, 40GB, fat32
+  - `sudo ln -s /opt/gadget_cdrom/gadget_cdrom.service /etc/systemd/system/gadget_cdrom.service`
+  - `sudo systemctl enable gadget_cdrom.service`
   - `sudo reboot`
 
 ## References
