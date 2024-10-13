@@ -167,7 +167,3 @@ What's the difference between my build and the pre-compiled image at https://git
 - Gadget CD-ROM Python script https://github.com/tjmnmk/gadget_cdrom
 - github errors https://github.com/orgs/community/discussions/134430#discussioncomment-10226666
 - Kernel compilation https://www.raspberrypi.com/documentation/computers/linux_kernel.html
-
-```
-
-```
