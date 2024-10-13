@@ -110,7 +110,7 @@ What's the difference between my build and the pre-compiled image at https://git
 
   - `sudo apt install -y lm-sensors nmon screen git p7zip-full python3-rpi.gpio python3-smbus python3-spidev python3-numpy python3-pil fonts-dejavu ntfs-3g`
 
-- Apply kernel patch for large ISOs, recompile and install the kernel natively. Takes a few hours, cross-compiling might be a better idea.
+- Apply kernel patch for large ISOs, recompile natively and install the kernel. Takes a few hours, cross-compiling might be a better idea.
 
   - `sudo apt install bc bison flex libssl-dev make ca-certificates`
   - `screen`
@@ -155,8 +155,8 @@ What's the difference between my build and the pre-compiled image at https://git
 - Shutdown the Pi, remove the microsd card, mount it on the host computer, make backup
 
   - `cd ~`
-  - `sudo dd if=/dev/mmcblk0 | gzip -9 > cdemu.img.gz`
-    - restore later with `sudo zcat cdemu.img.gz | sudo dd of=/dev/mmcblk0` if needed
+  - `sudo dd if=/dev/mmcblk0 | gzip -9 > cdemu-backup.img.gz`
+    - restore later with `sudo zcat cdemu-backup.img.gz | sudo dd of=/dev/mmcblk0` if needed
 
 - Install the gadget_cdrom
 
