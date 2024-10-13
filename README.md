@@ -11,9 +11,10 @@ Use cases:
 - Restoring an OS with Live CD tools
 - Recovering a corrupted bootloader with boot-repair-disk-64bit.iso
 
-What's special about my build:
+What's the difference between my build and the pre-compiled image at https://github.com/tjmnmk/gadget_cdrom/releases ?
 
--
+- Fully manual build on the official release of the OS to avoid any potential security risks
+- Most recent release of Raspberry Pi OS Lite
 
 ## Build pictures
 
@@ -35,14 +36,14 @@ What's special about my build:
 
 ## Build
 
-- Cut the GPIO pins as low as humanly possible
+- Cut the GPIO pins as short as humanly possible
 - Sift through the shims and spacers from the previous builds to find the right combination
 - Assemble
 - Download https://downloads.raspberrypi.com/raspios_lite_armhf/images/raspios_lite_armhf-2024-07-04/2024-07-04-raspios-bookworm-armhf-lite.img.xz
-- Write the image to the microsd card using Imager
+- Burn the image to the microsd card using Imager
   - `sudo apt install rpi-imager`
-    - `rpi-imager`
-- Mount the microsd card
+  - `rpi-imager`
+- Mount the microsd card on the host computer
 
 - Enable SSH
 
@@ -133,15 +134,15 @@ What's special about my build:
   - `KERNEL=kernel`
   - `head Makefile -n 4`
 
-    - says ```
+    - ```
 
-            # SPDX-License-Identifier: GPL-2.0
+      # SPDX-License-Identifier: GPL-2.0
 
-            VERSION = 6
-            PATCHLEVEL = 6
-            SUBLEVEL = 56
+      VERSION = 6
+      PATCHLEVEL = 6
+      SUBLEVEL = 56
 
-            ```
+      ```
 
   - `cp drivers/usb/gadget/function/storage_common.c drivers/usb/gadget/function/storage_common.c.orig`
   - create a patch
