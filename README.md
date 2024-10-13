@@ -23,11 +23,11 @@ What's the **difference** between my build and the pre-compiled image at https:/
 
 ## Parts list
 
-- Raspberry Pi Zero W - https://www.waveshare.com/wiki/Raspberry_Pi_Zero_W
-- 64Gb A1 U1 C10 microsd card
-- USB A board with pogo pins
-- Plexiglass case
-- 1.3inch OLED HAT - https://www.waveshare.com/wiki/1.3inch_OLED_HAT
+- Raspberry Pi Zero W with GPIO pins header - https://www.waveshare.com/wiki/Raspberry_Pi_Zero_W 118 元
+- 64Gb A1 U1 C10 microsd card 29 元
+- USB A board with pogo pins 11 元
+- Plexiglass case 8 元
+- 1.3inch OLED HAT - https://www.waveshare.com/wiki/1.3inch_OLED_HAT 69 元
 
 ## Software
 
@@ -37,7 +37,7 @@ What's the **difference** between my build and the pre-compiled image at https:/
 ## Build
 
 - Cut the GPIO pins as short as humanly possible
-- Sift through the shims and spacers from the previous builds to find the right combination
+- Sift through the nuts and spacers left from the previous builds to find the right combination, add a heatsink if it fits
 - Assemble
 - Download https://downloads.raspberrypi.com/raspios_lite_armhf/images/raspios_lite_armhf-2024-07-04/2024-07-04-raspios-bookworm-armhf-lite.img.xz
 - Burn the image to the microsd card using Imager
