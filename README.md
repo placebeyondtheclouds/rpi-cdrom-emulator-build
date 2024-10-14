@@ -253,8 +253,9 @@ What's the **difference** between my build and the pre-compiled image at https:/
     - `sudo cp /opt/rpi-cdrom-emulator-build/gadget_cdrom_lcd.py /opt/gadget_cdrom/`
     - `sudo cp /opt/rpi-cdrom-emulator-build/configST7789.py /opt/gadget_cdrom/`
     - `sudo cp /opt/rpi-cdrom-emulator-build/ST7789.py /opt/gadget_cdrom/`
+    - `sudo cp /opt/rpi-cdrom-emulator-build/create_image.sh /opt/gadget_cdrom/`
     - `sudo cp /opt/rpi-cdrom-emulator-build/gadget_cdrom_lcd.service /opt/gadget_cdrom/gadget_cdrom_lcd.service`
-    - `sudo wget https://archlinux.org/packages/extra/any/wqy-microhei-lite/download/ -O /opt/gadget_cdrom/font.tgz`
+    - `sudo wget https://archlinux.org/packages/extra/any/wqy-microhei/download/ -O /opt/gadget_cdrom/font.tgz`
     - `sudo tar -xvf /opt/gadget_cdrom/font.tgz -C /`
   - `sudo chmod +x *.py`
   - `sudo ./create_image.sh`, 40GB, exfat
