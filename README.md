@@ -76,8 +76,8 @@ What's the **difference** between my build and the pre-compiled image at https:/
 
 - Enable modules
 
-      - `echo "dtoverlay=dwc2" | sudo tee -a /media/$USER/bootfs/config.txt`
-      - `echo "dwc2" | sudo tee -a /media/$USER/rootfs/etc/modules`
+  - `echo "dtoverlay=dwc2" | sudo tee -a /media/$USER/bootfs/config.txt`
+  - `echo "dwc2" | sudo tee -a /media/$USER/rootfs/etc/modules`
 
 - Unmount, put the card into the rpi, connect a USB-Ethernet adapter to the Raspberry Pi, hook up the USB-Ethernet adapter to a power source, connect the adapter with Ethernet cable to a router for Internet access
 - Boot the Raspberry Pi
@@ -288,8 +288,8 @@ What's the **difference** between my build and the pre-compiled image at https:/
 
 ## Todo
 
-[] fix display flickering
-[] fix Chinese file names
+- [] fix display flickering
+- [] fix Chinese file names
 
 ## Takeaways
 
