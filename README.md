@@ -16,7 +16,7 @@ What's the **difference** between my build and the pre-compiled image at https:/
 - **exfat** instead of fat32 for the storage
 - Fully manual build on the official release of the OS **to avoid any potential security risks**
 - Most **recent** release of Raspberry Pi OS Lite
-- LCD display instead of OLED. It's not better or cheaper, it's just because I had bought the wrong part, and had to change the code to make it work. What do I do with all the real estate on the display? Add CPU load, temperature, free space indicators, for now.
+- LCD display instead of OLED. It's not better or cheaper, it's just because I had bought the wrong part, and had to change the code to make it work. What do I do with all the real estate on the display? Add CPU load, temperature and free space **indicators**.
 - **支持中文显示** (in file names also, but only when copying directly to the image mounted on the host computer)
 
 ## Build pictures
