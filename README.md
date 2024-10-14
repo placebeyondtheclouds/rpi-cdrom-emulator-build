@@ -46,7 +46,7 @@ What's the **difference** between my build and the pre-compiled image at https:/
 
 - Raspberry Pi Zero WH - https://www.waveshare.com/wiki/Raspberry_Pi_Zero_W 118 元
 - 64Gb A1 U1 C10 microsd card 29 元
-- USB A board with pogo pins 11 元
+- USB A board with spring pins 11 元
 - Plexiglass case 8 元
 - 1.3inch LCD HAT - https://www.waveshare.com/wiki/1.3inch_LCD_HAT 69 元
 
