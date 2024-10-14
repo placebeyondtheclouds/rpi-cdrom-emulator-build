@@ -288,8 +288,8 @@ What's the **difference** between my build and the pre-compiled image at https:/
 
 ## Todo
 
-- [] fix display flickering
-- [] fix Chinese file names
+- [ ] fix display flickering
+- [x] fix Chinese file names
 
 ## Takeaways
 
