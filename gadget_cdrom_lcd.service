@@ -1,0 +1,15 @@
+[Unit]
+Description=gadget_cdrom
+Before=basic.target
+After=local-fs.target sysinit.target
+DefaultDependencies=no
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/gadget_cdrom
+ExecStart=/opt/gadget_cdrom/gadget_cdrom_lcd.py
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

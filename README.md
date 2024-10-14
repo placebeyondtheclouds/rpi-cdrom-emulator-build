@@ -15,6 +15,7 @@ What's the **difference** between my build and the pre-compiled image at https:/
 
 - Fully manual build on the official release of the OS **to avoid any potential security risks**
 - Most **recent** release of Raspberry Pi OS Lite
+- LCD display instead of OLED. It's not better or cheaper, it's just because I had bought the wrong part, and had to change the code to make it work.
 
 ## Build pictures
 
@@ -23,11 +24,11 @@ What's the **difference** between my build and the pre-compiled image at https:/
 
 ## Parts list
 
-- Raspberry Pi Zero W with GPIO pins header - https://www.waveshare.com/wiki/Raspberry_Pi_Zero_W 118 元
+- Raspberry Pi Zero WH - https://www.waveshare.com/wiki/Raspberry_Pi_Zero_W 118 元
 - 64Gb A1 U1 C10 microsd card 29 元
 - USB A board with pogo pins 11 元
 - Plexiglass case 8 元
-- 1.3inch OLED HAT - https://www.waveshare.com/wiki/1.3inch_OLED_HAT 69 元
+- 1.3inch LCD HAT - https://www.waveshare.com/wiki/1.3inch_LCD_HAT 69 元
 
 ## Software
 
@@ -36,7 +37,7 @@ What's the **difference** between my build and the pre-compiled image at https:/
 
 ## Build
 
-- Cut the GPIO pins as short as humanly possible
+- Cut the GPIO header pins to the right length
 - Sift through the nuts and spacers left from the previous builds to find the right combination, add a heatsink if it fits
 - Assemble
 - Download https://downloads.raspberrypi.com/raspios_lite_armhf/images/raspios_lite_armhf-2024-07-04/2024-07-04-raspios-bookworm-armhf-lite.img.xz
@@ -66,6 +67,40 @@ What's the **difference** between my build and the pre-compiled image at https:/
 
 - At this point the commands are run on the Raspberry Pi
 
+- Enable wifi for debugging
+
+  - `sudo nano /etc/network/interfaces`
+
+    - ```
+      auto wlan0
+      allow-hotplug wlan0
+      iface wlan0 inet dhcp
+      wpa-conf /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
+      iface default inet dhcp
+
+      ```
+
+  - `sudo systemctl restart systemd-networkd`
+
+    - `wpa_passphrase 'tempwifi' '9eu8xdexm08rfh0w9erf9ewf09wexr' | sudo tee /etc/wpa_supplicant/wpa_supplicant-wlan0.conf`
+    - `sudo chmod 640 /etc/wpa_supplicant/wpa_supplicant-wlan0.conf`
+    - `sudo systemctl enable wpa_supplicant@wlan0.service`
+    - `sudo systemctl start wpa_supplicant@wlan0.service`
+
+- Disable IPv6
+
+  - `sudo nano /etc/sysctl.conf`
+
+    - ```
+      net.ipv6.conf.all.disable_ipv6 = 1
+      net.ipv6.conf.default.disable_ipv6 = 1
+      net.ipv6.conf.lo.disable_ipv6 = 1
+      ```
+
+  - `sudo sysctl -p`
+
+- Reconnect with wifi
+
 - Enable SPI and set the time zone for the SSL to work correctly
 
   - `sudo raspi-config`
@@ -90,7 +125,7 @@ What's the **difference** between my build and the pre-compiled image at https:/
 
   - `sudo sed -i '1s/^/#/' /etc/apt/sources.list`
 
-- Create a larger swap file
+- (optional) Create a larger swap file
 
   - `sudo swapoff -a`
   - `sudo dd if=/dev/zero of=/swap bs=1M count=1024`
@@ -108,9 +143,16 @@ What's the **difference** between my build and the pre-compiled image at https:/
 
 - Install the required packages
 
-  - `sudo apt install -y lm-sensors nmon screen git p7zip-full python3-rpi.gpio python3-smbus python3-spidev python3-numpy python3-pil fonts-dejavu ntfs-3g`
+  - `sudo apt install -y python3-psutil lm-sensors nmon screen git p7zip-full python3-rpi.gpio python3-smbus python3-spidev python3-numpy python3-pil fonts-dejavu ntfs-3g`
 
-- Apply kernel patch for large ISOs, recompile natively and install the kernel. Takes a few hours, cross-compiling might be a better idea.
+- Test the display
+  - `cd ~`
+  - `wget https://files.waveshare.com/upload/b/bd/1.3inch_LCD_HAT_code.7z`
+  - `7z x 1.3inch_LCD_HAT_code.7z`
+  - `sudo chmod 777 -R 1.3inch_LCD_HAT_code`
+  - `cd 1.3inch_LCD_HAT_code/1.3inch_LCD_HAT_code/python`
+  - `sudo python3 main.py`
+- (do not use) ~~Apply kernel patch for large ISOs, recompile natively and install the kernel. Takes up a day, cross-compiling might be a better idea.~~
 
   - `sudo apt install bc bison flex libssl-dev make ca-certificates`
   - `screen`
@@ -139,12 +181,12 @@ What's the **difference** between my build and the pre-compiled image at https:/
     - `nano drivers/usb/gadget/function/storage_common.c.updated`
     - remove six lines at line 243
     - might as well create a patch while you're at it
-      - `diff -Naru drivers/usb/gadget/function/storage_common.c.updated drivers/usb/gadget/function/storage_common.c > 00-remove_iso_limit.patch`
+      - `diff -Naru drivers/usb/gadget/function/storage_common.c drivers/usb/gadget/function/storage_common.c.updated > 00-remove_iso_limit.patch`
   - or just use the included patch for version 6.6.56
     - `patch drivers/usb/gadget/function/storage_common.c 00-remove_iso_limit.patch`
   - `make bcmrpi_defconfig`
-  - `make -j6 zImage modules dtbs`
-  - `sudo make -j6 modules_install`
+  - `make -j1 zImage modules dtbs`
+  - `sudo make -j1 modules_install`
   - `sudo cp /boot/firmware/$KERNEL.img /boot/firmware/$KERNEL-backup.img`
   - `sudo cp arch/arm/boot/zImage /boot/firmware/$KERNEL.img`
   - `sudo cp arch/arm/boot/dts/broadcom/*.dtb /boot/firmware/`
@@ -152,24 +194,54 @@ What's the **difference** between my build and the pre-compiled image at https:/
   - `sudo cp arch/arm/boot/dts/overlays/README /boot/firmware/overlays/`
   - `sudo reboot`
 
-- Shutdown the Pi, remove the microsd card, mount it on the host computer, make backup
+- Shutdown the Pi, remove the microsd card, mount it on the host computer (/media/$USER/bootfs and /media/$USER/rootfs), apply the patch and cross-compile the kernel. Ubuntu 24.04 host for cross-compiling
 
+  - `sudo apt install bc bison flex libssl-dev make libc6-dev libncurses5-dev`
+  - `sudo apt install crossbuild-essential-armhf`
   - `cd ~`
-  - `sudo dd if=/dev/mmcblk0 | gzip -9 > cdemu-backup.img.gz`
-    - restore later with `sudo zcat cdemu-backup.img.gz | sudo dd of=/dev/mmcblk0` if needed
+  - `git clone --depth=1 https://github.com/raspberrypi/linux`
+  - `cd linux`
+  - `KERNEL=kernel`
+  - `make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- bcmrpi_defconfig`
+  - check the version `head Makefile -n 4`
+  - apply the patch `patch drivers/usb/gadget/function/storage_common.c 00-remove_iso_limit.patch`
+  - `make -j8 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- zImage modules dtbs`
+  - `sudo env PATH=$PATH make -j8 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- INSTALL_MOD_PATH=/media/$USER/rootfs modules_install`
+  - `sudo cp /media/$USER/bootfs/$KERNEL.img /media/$USER/bootfs/$KERNEL-backup.img`
+  - `sudo cp arch/arm/boot/zImage /media/$USER/bootfs/$KERNEL.img`
+  - `sudo cp arch/arm/boot/dts/broadcom/*.dtb /media/$USER/bootfs/`
+  - `sudo cp arch/arm/boot/dts/overlays/*.dtb* /media/$USER/bootfs/overlays/`
+  - `sudo cp arch/arm/boot/dts/overlays/README /media/$USER/bootfs/overlays/`
+  - `sudo umount /media/$USER/bootfs`
+  - `sudo umount /media/$USER/rootfs`
 
 - Install the gadget_cdrom
 
   - `cd /opt`
   - `sudo git clone https://github.com/tjmnmk/gadget_cdrom.git`
+  - `sudo git clone https://github.com/placebeyondtheclouds/rpi-cdrom-emulator-build.git`
   - `cd gadget_cdrom`
+  - copy files
+    - `sudo cp /opt/rpi-cdrom-emulator-build/gadget_cdrom_lcd.py /opt/gadget_cdrom/`
+    - `sudo cp /opt/rpi-cdrom-emulator-build/configST7789.py /opt/gadget_cdrom/`
+    - `sudo cp /opt/rpi-cdrom-emulator-build/ST7789.py /opt/gadget_cdrom/`
+    - `sudo cp /opt/rpi-cdrom-emulator-build/gadget_cdrom_lcd.service /opt/gadget_cdrom/gadget_cdrom_lcd.service`
   - `sudo ./create_image.sh`, 40GB, fat32
-  - `sudo ln -s /opt/gadget_cdrom/gadget_cdrom.service /etc/systemd/system/gadget_cdrom.service`
-  - `sudo systemctl enable gadget_cdrom.service`
+  - `sudo ln -s /opt/gadget_cdrom/gadget_cdrom_lcd.service /etc/systemd/system/gadget_cdrom_lcd.service`
+  - `sudo systemctl enable gadget_cdrom_lcd.service`
   - `sudo reboot`
+
+- Backup
+
+  - `cd ~`
+  - `sudo dd if=/dev/sdb | gzip -9 > cdemu-backup.img.gz`
+    - restore later with `sudo zcat cdemu-backup.img.gz | sudo dd of=/dev/sdb` if needed
+
+## Takeaways
+
+-
 
 ## References
 
 - Gadget CD-ROM Python script https://github.com/tjmnmk/gadget_cdrom
-- github errors https://github.com/orgs/community/discussions/134430#discussioncomment-10226666
 - Kernel compilation https://www.raspberrypi.com/documentation/computers/linux_kernel.html

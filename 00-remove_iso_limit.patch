@@ -1,5 +1,5 @@
---- drivers/usb/gadget/function/storage_common.c.updated        2024-10-13 15:07:41.984468608 +0800
-+++ drivers/usb/gadget/function/storage_common.c   2024-10-13 14:14:30.729647763 +0800
+--- drivers/usb/gadget/function/storage_common.c        2024-10-14 06:57:22.511000000 +0800
++++ drivers/usb/gadget/function/storage_common.c.updated        2024-10-14 07:06:10.976000000 +0800
 @@ -244,12 +244,6 @@
         min_sectors = 1;
         if (curlun->cdrom) {
