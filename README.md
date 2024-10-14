@@ -13,14 +13,28 @@ My notes on building a hardware cdrom emulator for ISO images using a **Raspberr
 
 What's the **difference** between my build and the pre-compiled image at https://github.com/tjmnmk/gadget_cdrom/releases ?
 
+- **exfat** instead of fat32 for the storage
 - Fully manual build on the official release of the OS **to avoid any potential security risks**
 - Most **recent** release of Raspberry Pi OS Lite
-- LCD display instead of OLED. It's not better or cheaper, it's just because I had bought the wrong part, and had to change the code to make it work.
+- LCD display instead of OLED. It's not better or cheaper, it's just because I had bought the wrong part, and had to change the code to make it work. What do I do with all the real estate on the display? Add CPU load, temperature, free space indicators, for now.
+- **支持中文显示** (in file names also, but only when copying directly to the image mounted on the host computer)
 
 ## Build pictures
 
-| ![untitled-1.jpg](pictures/small/untitled-1.jpg) | ![untitled-2.jpg](pictures/small/untitled-2.jpg) | ![untitled-3.jpg](pictures/small/untitled-3.jpg) |
-| :----------------------------------------------: | :----------------------------------------------: | :----------------------------------------------: |
+| ![img001.jpg](pictures/img001.jpg) | ![img002.jpg](pictures/img002.jpg) | ![untitled-3.jpg](pictures/img003.jpg) |
+| :--------------------------------: | :--------------------------------: | :------------------------------------: |
+| ![img004.jpg](pictures/img004.jpg) | ![img005.jpg](pictures/img005.jpg) |   ![img006.jpg](pictures/img006.jpg)   |
+| :--------------------------------: | :--------------------------------: | :------------------------------------: |
+| ![img007.jpg](pictures/img007.jpg) | ![img008.jpg](pictures/img008.jpg) |   ![img009.jpg](pictures/img009.jpg)   |
+| :--------------------------------: | :--------------------------------: | :------------------------------------: |
+| ![img010.jpg](pictures/img010.jpg) | ![img011.jpg](pictures/img011.jpg) |   ![img012.jpg](pictures/img012.jpg)   |
+| :--------------------------------: | :--------------------------------: | :------------------------------------: |
+| ![img013.jpg](pictures/img013.jpg) | ![img014.jpg](pictures/img014.jpg) |   ![img015.jpg](pictures/img015.jpg)   |
+| :--------------------------------: | :--------------------------------: | :------------------------------------: |
+| ![img016.jpg](pictures/img016.jpg) | ![img017.jpg](pictures/img017.jpg) |   ![img018.jpg](pictures/img018.jpg)   |
+| :--------------------------------: | :--------------------------------: | :------------------------------------: |
+| ![img019.jpg](pictures/img019.jpg) | ![img020.jpg](pictures/img020.jpg) |   ![img021.jpg](pictures/img021.jpg)   |
+| :--------------------------------: | :--------------------------------: | :------------------------------------: |
 
 ## Parts list
 
@@ -75,7 +89,6 @@ What's the **difference** between my build and the pre-compiled image at https:/
       auto wlan0
       allow-hotplug wlan0
       iface wlan0 inet dhcp
-      wpa-conf /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
       iface default inet dhcp
 
       ```
@@ -83,6 +96,15 @@ What's the **difference** between my build and the pre-compiled image at https:/
   - `sudo systemctl restart systemd-networkd`
 
     - `wpa_passphrase 'tempwifi' '9eu8xdexm08rfh0w9erf9ewf09wexr' | sudo tee /etc/wpa_supplicant/wpa_supplicant-wlan0.conf`
+    - ```
+      sudo tee -a /etc/wpa_supplicant/wpa_supplicant-wlan0.conf <<EOF
+      country=CN
+      ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+      update_config=1
+      ap_scan=1
+      EOF
+      ```
+
     - `sudo chmod 640 /etc/wpa_supplicant/wpa_supplicant-wlan0.conf`
     - `sudo systemctl enable wpa_supplicant@wlan0.service`
     - `sudo systemctl start wpa_supplicant@wlan0.service`
@@ -226,22 +248,65 @@ What's the **difference** between my build and the pre-compiled image at https:/
     - `sudo cp /opt/rpi-cdrom-emulator-build/configST7789.py /opt/gadget_cdrom/`
     - `sudo cp /opt/rpi-cdrom-emulator-build/ST7789.py /opt/gadget_cdrom/`
     - `sudo cp /opt/rpi-cdrom-emulator-build/gadget_cdrom_lcd.service /opt/gadget_cdrom/gadget_cdrom_lcd.service`
-  - `sudo ./create_image.sh`, 40GB, fat32
+    - `sudo wget https://archlinux.org/packages/extra/any/wqy-microhei-lite/download/ -O /opt/gadget_cdrom/font.tgz`
+    - `sudo tar -xvf /opt/gadget_cdrom/font.tgz -C /`
+  - `sudo chmod +x *.py`
+  - `sudo ./create_image.sh`, 40GB, exfat
   - `sudo ln -s /opt/gadget_cdrom/gadget_cdrom_lcd.service /etc/systemd/system/gadget_cdrom_lcd.service`
   - `sudo systemctl enable gadget_cdrom_lcd.service`
+  - `sudo systemctl restart gadget_cdrom_lcd.service`
   - `sudo reboot`
 
-- Backup
+- (optional) Backup
 
   - `cd ~`
   - `sudo dd if=/dev/sdb | gzip -9 > cdemu-backup.img.gz`
     - restore later with `sudo zcat cdemu-backup.img.gz | sudo dd of=/dev/sdb` if needed
 
+- (optional) Fast copy ISO files from the host computer to the memory card
+
+  - `sudo mkdir /mnt/iso`
+  - `sudo mount /dev/sdb2 /media/$USER/rootfs`
+  - `cd /media/$USER/rootfs`
+  - `sudo mount -t exfat "$(sudo losetup -PLf iso.img --show)p1" /mnt/iso`
+  - `sudo cp ~/Downloads/boot-repair-disk-64bit.iso /mnt/iso`
+  - `sudo umount /mnt/iso`
+  - `sudo umount /media/$USER/rootfs`
+
+- (optional) Mount the image from inside the rpi
+  - `sudo systemctl stop gadget_cdrom_lcd.service`
+  - `sudo umount /iso`
+  - `sudo mount -t exfat "$(sudo losetup -PLf /iso.img --show)p1" /iso`
+  - `sudo umount /iso`
+
+## Todo
+
+[] fix display flickering
+[] fix Chinese file names
+
 ## Takeaways
 
--
+- Long startup time, about a minute
 
 ## References
 
 - Gadget CD-ROM Python script https://github.com/tjmnmk/gadget_cdrom
 - Kernel compilation https://www.raspberrypi.com/documentation/computers/linux_kernel.html
+
+## bugfixes
+
+```
+DEBUG:__main__:isolist: []
+DEBUG:__main__:Pressed mount
+Traceback (most recent call last):
+  File "/opt/gadget_cdrom/gadget_cdrom.py", line 382, in <module>
+    Main().main()
+  File "/opt/gadget_cdrom/gadget_cdrom.py", line 355, in main
+    f()
+  File "/opt/gadget_cdrom/gadget_cdrom.py", line 370, in _button_mount
+    self._state.insert_iso()
+  File "/opt/gadget_cdrom/gadget_cdrom.py", line 140, in insert_iso
+    iso_name = self.iso_ls()[self.get_iso_select()]
+               ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+IndexError: list index out of range
+```

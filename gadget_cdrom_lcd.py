@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
+
 import os
 import logging
 import time
@@ -11,7 +14,10 @@ import psutil
 # Set GPIO mode
 GPIO.setmode(GPIO.BCM)
 
-FONT = "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf"
+# FONT = "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf"
+# https://archlinux.org/packages/extra/any/wqy-microhei-lite/
+FONT = "/usr/share/fonts/wenquanyi/wqy-microhei-lite/wqy-microhei-lite.ttc"
+
 APP_DIR = os.path.dirname(os.path.realpath(__file__))
 
 MODE_CD = "cd"
@@ -185,8 +191,14 @@ class Display:
             except IndexError:
                 pass
 
-        # Get CPU load
         cpu_load = psutil.cpu_percent(interval=1)
+        cpu_temp = subprocess.check_output(["vcgencmd", "measure_temp"]).decode().strip()
+        cpu_temp = cpu_temp.split("=")[1].split("'")[0]
+        cpu_temp = round(float(cpu_temp), 1)
+        
+        iso_free = ""
+        if os.path.exists("/iso"):
+            iso_free = subprocess.check_output(["df", "-h", "/iso"]).decode().split("\n")[1].split()[3]
 
         draw.text((0, 0), mode_text + " •" + iso_name, font=self._font, fill="BLACK")
         draw.text((0, 30), iso_choice[0], font=self._font, fill="BLACK")
@@ -194,7 +206,10 @@ class Display:
         draw.text((0, 90), iso_choice[2], font=self._font, fill="BLACK")
         draw.text((0, 120), iso_choice[3], font=self._font, fill="BLACK")
         draw.text((0, 150), iso_choice[4], font=self._font, fill="BLACK")
-        draw.text((0, 180), f"CPU Load: {cpu_load}%", font=self._font, fill="BLACK")
+        draw.line((0, 180, 240, 180), fill="BLACK")
+        draw.text((0, 180), f"CPU: {cpu_load}%, Temp: {cpu_temp}°C", font=self._font, fill="BLACK")
+        draw.text((0, 210), f"空间： {iso_free}", font=self._font, fill="BLACK")
+
 
         self._disp.ShowImage(image)
 
