@@ -1,4 +1,4 @@
-# DIY cdrom emulator build, Raspberry Pi
+# Custom DIY cdrom/pendrive emulator build, Raspberry Pi
 
 ## Description
 
