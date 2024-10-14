@@ -2,7 +2,7 @@
 
 ## Description
 
-My notes on building a hardware cdrom emulator for ISO images using a **Raspberry Pi Zero W** and a python script **https://github.com/tjmnmk/gadget_cdrom**
+My notes on building a hardware cdrom emulator for ISO images using a **Raspberry Pi Zero W**, python and shell scripts **https://github.com/tjmnmk/gadget_cdrom** and the driver code for ST7789 controller from https://files.waveshare.com/upload/b/bd/1.3inch_LCD_HAT_code.7z
 
 **Use cases**:
 
