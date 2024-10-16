@@ -54,6 +54,8 @@ What's the **difference** between my build and the pre-compiled image at https:/
 
 - Raspberry Pi OS Lite - https://www.raspberrypi.org/software/operating-systems/
 - https://github.com/tjmnmk/gadget_cdrom
+- https://files.waveshare.com/upload/b/bd/1.3inch_LCD_HAT_code.7z
+- the code in this repository, https://github.com/placebeyondtheclouds/rpi-cdrom-emulator-build
 
 ## Build
 
