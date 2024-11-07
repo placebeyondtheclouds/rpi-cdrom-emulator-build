@@ -10,6 +10,8 @@ import RPi.GPIO as GPIO
 from PIL import Image, ImageDraw, ImageFont
 from ST7789 import ST7789
 import psutil
+import re
+import subprocess
 
 # Set GPIO mode
 GPIO.setmode(GPIO.BCM)
@@ -154,7 +156,43 @@ class Display:
         self._font = ImageFont.truetype(FONT, 16)
         self._font_hdd = ImageFont.truetype(FONT, 60)
 
+    
     def refresh(self, state):
+
+        def get_wifi_signal(timeout: int = 2) -> str:
+            try:
+                cmd = "iwconfig wlan0 | grep 'Signal level'"
+                output = subprocess.run(
+                    cmd,
+                    shell=True,
+                    capture_output=True,
+                    timeout=2,
+                    text=True
+                ).stdout
+
+                if match := re.search(r"Signal level=(-\d+)", output):
+                    return f"WiFi: {match.group(1)} dBm"
+                    
+            except (subprocess.SubprocessError, subprocess.TimeoutExpired):
+                pass
+            except Exception:
+                pass
+            
+            return "WiFi: N/A"
+        
+        def get_cpu_metrics():
+            try:
+                cpu_load = psutil.cpu_percent(interval=1)
+                temp_output = subprocess.check_output(["vcgencmd", "measure_temp"]).decode().strip()
+                cpu_temp = float(temp_output.split("=")[1].split("'")[0])
+                cpu_temp = round(cpu_temp, 1)
+                
+                return cpu_load, cpu_temp
+                
+            except (subprocess.CalledProcessError, ValueError, IndexError) as e:
+                return cpu_load, None
+            
+
         if state.get_mode() not in ALL_MODES:
             raise Exception("invalid mode", state.get_mode())
 
@@ -193,26 +231,9 @@ class Display:
             except IndexError:
                 pass
 
-        cpu_load = psutil.cpu_percent(interval=1)
-        cpu_temp = subprocess.check_output(["vcgencmd", "measure_temp"]).decode().strip()
-        cpu_temp = cpu_temp.split("=")[1].split("'")[0]
-        cpu_temp = round(float(cpu_temp), 1)
-        wifi_state = subprocess.check_output(["iwgetid", "-r"]).decode().strip()
-        if wifi_state:
-            try:
-                iwconfig_output = subprocess.check_output(["iwconfig", "wlan0"]).decode().split("\n")
-                link_quality = "N/A"
-                signal_level = "N/A"
-                
-                for line in iwconfig_output:
-                    if "Signal level" in line:
-                        signal_level = line.split("Signal level=")[1].split()[0]
-                
-                wifi_state = f"WiFi: {signal_level} dBm"
-            except subprocess.CalledProcessError:
-                wifi_state = "N/A"
-            except IndexError:
-                wifi_state = "N/A"
+
+        cpu_load, cpu_temp = get_cpu_metrics()
+        wifi_state = get_wifi_signal()
 
         iso_free = ""
         if os.path.exists("/iso"):
