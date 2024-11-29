@@ -171,6 +171,11 @@ What's the **difference** between my build and the pre-compiled image at https:/
   - `sudo apt update`
   - `sudo apt upgrade`
 
+- Configure locale for unicode characters support
+
+  - sudo dpkg-reconfigure locales
+    - choose `en_US.UTF-8`
+
 - Install the required packages
 
   - `sudo apt install -y python3-psutil lm-sensors nmon screen git p7zip-full python3-rpi.gpio python3-smbus python3-spidev python3-numpy python3-pil fonts-dejavu ntfs-3g`
@@ -248,10 +253,10 @@ What's the **difference** between my build and the pre-compiled image at https:/
 - Install the gadget_cdrom
 
   - `cd /opt`
-  - `sudo git clone https://github.com/tjmnmk/gadget_cdrom.git`
+  - `sudo git clone https://github.com/placebeyondtheclouds/gadget_cdrom.git`
   - `sudo git clone https://github.com/placebeyondtheclouds/rpi-cdrom-emulator-build.git`
   - `cd gadget_cdrom`
-  - copy files
+  - copy/replace the files
     - `sudo cp /opt/rpi-cdrom-emulator-build/gadget_cdrom_lcd.py /opt/gadget_cdrom/`
     - `sudo cp /opt/rpi-cdrom-emulator-build/configST7789.py /opt/gadget_cdrom/`
     - `sudo cp /opt/rpi-cdrom-emulator-build/ST7789.py /opt/gadget_cdrom/`
