@@ -6,6 +6,7 @@ My notes on building a hardware cdrom emulator for ISO images using a **Raspberr
 
 **Use cases**:
 
+- _truly_ open-source hardware replacement for **Ventoy**
 - Setting up a fresh install of an OS on a computer without the need to create a bootable USB
 - Running a live OS without the need to create a bootable USB
 - Restoring an OS with Live CD tools
