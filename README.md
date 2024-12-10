@@ -18,7 +18,7 @@ What's the **difference** between my build and the pre-compiled image at https:/
 - Fully manual build on the official release of the OS **to avoid any potential security risks**
 - Most **recent** release of Raspberry Pi OS Lite
 - LCD display instead of OLED. It's not better or cheaper, it's just because I had bought the wrong part, and had to change the code to make it work. What do I do with all the real estate on the display? Add CPU load, temperature and free space **indicators**, of course.
-- **支持中文显示** (in file names also, but only when copying directly to the image mounted on the host computer)
+- **支持显示中文** (in file names also, but only when copying directly to the image mounted on the host computer)
 
 ## Build pictures
 
