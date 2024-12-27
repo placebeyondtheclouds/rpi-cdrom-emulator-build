@@ -6,7 +6,7 @@ My notes on building a hardware cdrom emulator for ISO images using a **Raspberr
 
 **Use cases**:
 
-- _truly_ open-source hardware replacement for **Ventoy**
+- a _truly_ open-source hardware alternative to Ventoy, in light of the [issues](https://github.com/ventoy/Ventoy/issues/2795)
 - Setting up a fresh install of an OS on a computer without the need to create a bootable USB
 - Running a live OS without the need to create a bootable USB
 - Restoring an OS with Live CD tools
@@ -14,7 +14,7 @@ My notes on building a hardware cdrom emulator for ISO images using a **Raspberr
 
 What's the **difference** between my build and the pre-compiled image at https://github.com/tjmnmk/gadget_cdrom/releases ?
 
-- **exfat** instead of fat32 for the storage
+- **exfat** instead of fat32 for the storage (support for files larger than 4GB)
 - Fully manual build on the official release of the OS **to avoid any potential security risks**
 - Most **recent** release of Raspberry Pi OS Lite
 - LCD display instead of OLED. It's not better or cheaper, it's just because I had bought the wrong part, and had to change the code to make it work. What do I do with all the real estate on the display? Add CPU load, temperature and free space **indicators**, of course.
