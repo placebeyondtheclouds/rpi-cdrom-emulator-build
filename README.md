@@ -6,7 +6,8 @@ My notes on building a hardware cdrom emulator for ISO images using a **Raspberr
 
 **Use cases**:
 
-- a _truly_ open-source hardware alternative to Ventoy, in light of the [issues](https://github.com/ventoy/Ventoy/issues/2795)
+- A _truly_ open-source hardware alternative to Ventoy, in light of the [issues](https://github.com/ventoy/Ventoy/issues/2795)
+- An alternative to balenaEtcher over [security concerns brought up by Tails mantainers](https://tails.net/news/rufus/index.en.html)
 - Setting up a fresh install of an OS on a computer without the need to create a bootable USB
 - Running a live OS without the need to create a bootable USB
 - Restoring an OS with Live CD tools
