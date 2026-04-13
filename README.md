@@ -280,12 +280,14 @@ the usage is the same as in [the original project](https://github.com/tjmnmk/gad
   - `sudo cp ~/Downloads/boot-repair-disk-64bit.iso /mnt/iso`
   - `sudo umount /mnt/iso`
   - `cd ~`
+  - `sudo losetup -d $(losetup | grep "rootfs/iso.img" | cut -d ' ' -f 1)`
   - `sudo umount /media/$USER/rootfs`
 
 - Mount the image from inside the rpi
   - `sudo systemctl stop gadget_cdrom_lcd.service`
   - `sudo umount /iso`
   - `sudo mount -t exfat "$(sudo losetup -PLf /iso.img --show)p1" /iso`
+  - `sudo losetup -d $(losetup | grep "rootfs/iso.img" | cut -d ' ' -f 1)`
   - `sudo umount /iso`
 
 ## Todo
