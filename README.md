@@ -2,7 +2,7 @@
 
 ## Description
 
-My notes on building a hardware cdrom emulator for ISO images using a **Raspberry Pi Zero W**, python and shell scripts **https://github.com/tjmnmk/gadget_cdrom** and the driver code for ST7789 controller from https://files.waveshare.com/upload/b/bd/1.3inch_LCD_HAT_code.7z
+My notes on building a hardware cdrom emulator for ISO images using a **Raspberry Pi Zero W**, python and shell scripts **https://github.com/tjmnmk/gadget_cdrom**, the driver code for ST7789 controller from https://files.waveshare.com/upload/b/bd/1.3inch_LCD_HAT_code.7z and OTS parts
 
 **Use cases**:
 
@@ -16,10 +16,21 @@ My notes on building a hardware cdrom emulator for ISO images using a **Raspberr
 What's the **difference** between my build and the pre-compiled image at https://github.com/tjmnmk/gadget_cdrom/releases ?
 
 - **exfat** instead of fat32 for the storage (support for files larger than 4GB)
-- Fully manual build on the official release of the OS **to avoid any potential security risks**
+- Fully manual build with OTS hardware on the official release of the OS **to avoid any potential security risks and supply chain attacks**
 - Most **recent** release of Raspberry Pi OS Lite
-- LCD display instead of OLED. It's not better or cheaper, it's just because I had bought the wrong part, and had to change the code to make it work. What do I do with all the real estate on the display? Add CPU load, temperature and free space **indicators**, of course.
+- LCD display instead of OLED. It's not better or cheaper, it's just because I had bought the wrong part, and had to change the code to make it work.
 - **中文字体** (in file names also, but only when copying directly to the image mounted on the host computer)
+
+## usage
+
+the usage is the same as in [the original project](https://github.com/tjmnmk/gadget_cdrom):
+
+- Key1 - Activate selected image
+- Key2 - Deactivate image
+- Key3 - Change mode (HDD storage / ISO CDROM / ISO pendrive)
+- Joystick Down - next image
+- Joystick Up - previous image
+- Joystick Left - shutdown / power on
 
 ## Build pictures
 
@@ -65,36 +76,30 @@ What's the **difference** between my build and the pre-compiled image at https:/
 - Sift through the nuts and spacers left from the previous builds to find the right combination, add a heatsink if it fits
 - Assemble
 - Download https://downloads.raspberrypi.com/raspios_lite_armhf/images/raspios_lite_armhf-2024-07-04/2024-07-04-raspios-bookworm-armhf-lite.img.xz
-- Burn the image to the microsd card using Imager
+- Burn the image to the microsd card using the Imager
   - `sudo apt install rpi-imager`
   - `rpi-imager`
 - Mount the microsd card on the host computer
 
 - Enable SSH
-
   - `sudo touch /media/$USER/bootfs/ssh`
 
 - Add user
-
   - `echo "rpiuser:$(echo 'rpipassword' | openssl passwd -6 -stdin)" | sudo tee /media/$USER/bootfs/userconf`
 
 - Enable modules
-
   - `echo "dtoverlay=dwc2" | sudo tee -a /media/$USER/bootfs/config.txt`
   - `echo "dwc2" | sudo tee -a /media/$USER/rootfs/etc/modules`
 
 - Unmount, put the card into the rpi, connect a USB-Ethernet adapter to the Raspberry Pi, hook up the USB-Ethernet adapter to a power source, connect the adapter with Ethernet cable to a router for Internet access
 - Boot the Raspberry Pi
 - SSH into the Raspberry Pi
-
   - `ssh -o IdentitiesOnly=yes rpiuser@raspberrypi.lan` password `rpipassword`.
 
-- At this point the commands are run on the Raspberry Pi
+- At this point the following commands are run on the Raspberry Pi
 
-- Enable wifi for debugging
-
+- Enable connecting to a wifi ap for debugging
   - `sudo nano /etc/network/interfaces`
-
     - ```
       auto wlan0
       allow-hotplug wlan0
@@ -104,7 +109,6 @@ What's the **difference** between my build and the pre-compiled image at https:/
       ```
 
   - `sudo systemctl restart systemd-networkd`
-
     - `wpa_passphrase 'tempwifi' '9eu8xdexm08rfh0w9erf9ewf09wexr' | sudo tee /etc/wpa_supplicant/wpa_supplicant-wlan0.conf`
     - ```
       sudo tee -a /etc/wpa_supplicant/wpa_supplicant-wlan0.conf <<EOF
@@ -120,9 +124,7 @@ What's the **difference** between my build and the pre-compiled image at https:/
     - `sudo systemctl start wpa_supplicant@wlan0.service`
 
 - Disable IPv6
-
   - `sudo nano /etc/sysctl.conf`
-
     - ```
       net.ipv6.conf.all.disable_ipv6 = 1
       net.ipv6.conf.default.disable_ipv6 = 1
@@ -134,13 +136,11 @@ What's the **difference** between my build and the pre-compiled image at https:/
 - Reconnect with wifi
 
 - Enable SPI and set the time zone for the SSL to work correctly
-
   - `sudo raspi-config`
     - Interface Options, SPI, Yes, Back
     - Localisation Options, Timezone, Asia, Shanghai, Finish, Reboot (or use `sudo dpkg-reconfigure tzdata`)
 
 - (optional) Replace the original repository with Chinese mirrors if in China
-
   - ```
     deb http://archive.raspberrypi.com/debian/ bookworm main
     # Uncomment line below then 'apt-get update' to enable 'apt-get source'
@@ -158,7 +158,6 @@ What's the **difference** between my build and the pre-compiled image at https:/
   - `sudo sed -i '1s/^/#/' /etc/apt/sources.list`
 
 - (optional) Create a larger swap file
-
   - `sudo swapoff -a`
   - `sudo dd if=/dev/zero of=/swap bs=1M count=1024`
   - `sudo mkswap /swap`
@@ -169,17 +168,14 @@ What's the **difference** between my build and the pre-compiled image at https:/
   - `swapon --show`
 
 - Update the Raspberry Pi
-
   - `sudo apt update`
   - `sudo apt upgrade`
 
 - Configure locale for unicode characters support
-
   - sudo dpkg-reconfigure locales
     - choose `en_US.UTF-8`
 
 - Install the required packages
-
   - `sudo apt install -y python3-psutil lm-sensors nmon screen git p7zip-full python3-rpi.gpio python3-smbus python3-spidev python3-numpy python3-pil fonts-dejavu ntfs-3g`
 
 - Test the display
@@ -190,7 +186,6 @@ What's the **difference** between my build and the pre-compiled image at https:/
   - `cd 1.3inch_LCD_HAT_code/1.3inch_LCD_HAT_code/python`
   - `sudo python3 main.py`
 - (do not use) ~~Apply kernel patch for large ISOs, recompile natively and install the kernel. Takes up a day, cross-compiling might be a better idea.~~
-
   - `sudo apt install bc bison flex libssl-dev make ca-certificates`
   - `screen`
   - `cd ~`
@@ -202,7 +197,6 @@ What's the **difference** between my build and the pre-compiled image at https:/
   - `cd linux`
   - `KERNEL=kernel`
   - `head Makefile -n 4`
-
     - ```
 
       # SPDX-License-Identifier: GPL-2.0
@@ -232,7 +226,6 @@ What's the **difference** between my build and the pre-compiled image at https:/
   - `sudo reboot`
 
 - Shutdown the Pi, remove the microsd card, mount it on the host computer (/media/$USER/bootfs and /media/$USER/rootfs), apply the patch and cross-compile the kernel. Ubuntu 24.04 host for cross-compiling
-
   - `sudo apt install bc bison flex libssl-dev make libc6-dev libncurses5-dev`
   - `sudo apt install crossbuild-essential-armhf`
   - `cd ~`
@@ -253,9 +246,8 @@ What's the **difference** between my build and the pre-compiled image at https:/
   - `sudo umount /media/$USER/rootfs`
 
 - Install the gadget_cdrom
-
   - `cd /opt`
-  - `sudo git clone https://github.com/placebeyondtheclouds/gadget_cdrom.git`
+  - `sudo git clone https://github.com/placebeyondtheclouds/gadget_cdrom.git` (a copy of the original repo)
   - `sudo git clone https://github.com/placebeyondtheclouds/rpi-cdrom-emulator-build.git`
   - `cd gadget_cdrom`
   - copy/replace the files
@@ -273,14 +265,14 @@ What's the **difference** between my build and the pre-compiled image at https:/
   - `sudo systemctl restart gadget_cdrom_lcd.service`
   - `sudo reboot`
 
-- (optional) Backup
-
+- (optional) Backup the memory card
   - `cd ~`
   - `sudo dd if=/dev/sdb | gzip -9 > cdemu-backup.img.gz`
     - restore later with `sudo zcat cdemu-backup.img.gz | sudo dd of=/dev/sdb` if needed
 
-- (optional) Fast copy ISO files from the host computer to the memory card
+## copying ISO files into the emulator
 
+- Fast copy ISO files from the host computer to the memory card
   - `sudo mkdir /mnt/iso`
   - `sudo mount /dev/sdb2 /media/$USER/rootfs`
   - `cd /media/$USER/rootfs`
@@ -289,7 +281,7 @@ What's the **difference** between my build and the pre-compiled image at https:/
   - `sudo umount /mnt/iso`
   - `sudo umount /media/$USER/rootfs`
 
-- (optional) Mount the image from inside the rpi
+- Mount the image from inside the rpi
   - `sudo systemctl stop gadget_cdrom_lcd.service`
   - `sudo umount /iso`
   - `sudo mount -t exfat "$(sudo losetup -PLf /iso.img --show)p1" /iso`
@@ -300,7 +292,7 @@ What's the **difference** between my build and the pre-compiled image at https:/
 - [ ] fix display flickering
 - [x] fix Chinese file names
 
-## Takeaways
+## downsides
 
 - Long startup time, about a minute
 
