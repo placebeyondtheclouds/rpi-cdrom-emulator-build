@@ -30,7 +30,7 @@ the usage is the same as in [the original project](https://github.com/tjmnmk/gad
 - Key3 - Change mode (HDD storage / ISO CDROM / ISO pendrive)
 - Joystick Down - next image
 - Joystick Up - previous image
-- Joystick Left - shutdown / power on
+- Joystick Left - shutdown
 
 ## Build pictures
 
@@ -279,6 +279,7 @@ the usage is the same as in [the original project](https://github.com/tjmnmk/gad
   - `sudo mount -t exfat "$(sudo losetup -PLf iso.img --show)p1" /mnt/iso`
   - `sudo cp ~/Downloads/boot-repair-disk-64bit.iso /mnt/iso`
   - `sudo umount /mnt/iso`
+  - `cd ~`
   - `sudo umount /media/$USER/rootfs`
 
 - Mount the image from inside the rpi
